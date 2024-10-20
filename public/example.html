@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>File Downloader</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 40px;
+            background-color: #f0f2f5;
+            color: #333;
+        }
+
+        h1 {
+            color: #007bff;
+            text-align: center;
+            font-size: 2em;
+            margin-bottom: 20px;
+            text-shadow: 0px 3px 5px rgba(0, 123, 255, 0.3);
+        }
+
+        .file-list {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #ffffff;
+            border-radius: 15px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+            overflow: hidden;
+        }
+
+        .directory,
+        .file-item {
+            margin: 5px 0;
+            padding: 10px;
+            border-radius: 5px;
+            transition: transform 0.2s ease, background-color 0.3s ease;
+            animation: fadeIn 0.5s ease forwards;
+            opacity: 0;
+        }
+
+        .directory {
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .file-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .file-item:last-child {
+            border-bottom: none;
+        }
+
+        .file-item:hover {
+            background-color: #f1f5f9;
+            transform: scale(1.02);
+        }
+
+        .file-item a {
+            text-decoration: none;
+            color: #007bff;
+            font-weight: 600;
+            transition: color 0.3s ease;
+        }
+
+        .file-item a:hover {
+            color: #0056b3;
+        }
+
+        .download-button {
+            background-color: #0e0f0f;
+            color: white;
+            padding: 8px 15px;
+            border-radius: 5px;
+            text-decoration: none;
+            font-size: 0.9em;
+            box-shadow: 0 4px 10px rgba(0, 123, 255, 0.3);
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+
+        .download-file-link{
+            text-decoration: none;
+            color: #007bff;
+            font-weight: 600;
+            transition: color 0.3s ease;
+        }
+        .download-file-link:hover {
+            color: #0056b3;
+        }
+
+
+        .download-button:hover {
+            background-color: #0056b3;
+            transform: translateY(-3px);
+            box-shadow: 0 6px 12px rgba(0, 123, 255, 0.4);
+        }
+
+        @keyframes fadeIn {
+            0% {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @media (max-width: 600px) {
+            .file-list {
+                max-width: 100%;
+                padding: 15px;
+            }
+
+            .file-item {
+                flex-direction: column;
+                align-items: flex-start;
+                padding: 20px;
+            }
+
+            .download-button {
+                margin-top: 10px;
+                width: 100%;
+                text-align: center;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <h1>File Downloader</h1>
+    <div id="fileList" class="file-list"></div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            fetch('/api/files')
+                .then(response => response.json())
+                .then(directoryStructure => {
+                    const fileList = document.getElementById('fileList');
+
+                    function createFileElement(file) {
+                        const item = document.createElement('div');
+                        item.className = 'file-item';
+
+                        const link = document.createElement('a');
+                        link.href = `/download/${encodeURIComponent(file.path)}`;
+                        link.textContent = file.name;
+
+                        const downloadButton = document.createElement('a');
+                        downloadButton.href = `/download/${encodeURIComponent(file.path)}`;
+                        downloadButton.className = 'download-button';
+                        downloadButton.textContent = 'Download';
+
+                        item.appendChild(link);
+                        item.appendChild(downloadButton);
+                        return item;
+                    }
+
+                    // function renderDirectory(directory, container) {
+                    //     const directoryElement = document.createElement('div');
+                    //     directoryElement.className = 'directory';
+                    //     directoryElement.textContent = directory.name;
+                    //     container.appendChild(directoryElement);
+
+                    //     const subContainer = document.createElement('div');
+                    //     subContainer.style.marginLeft = '20px';
+
+                    //     directoryElement.addEventListener('click', () => {
+                    //         subContainer.style.display = subContainer.style.display === 'none' ? 'block' : 'none';
+                    //     });
+
+                    //     container.appendChild(subContainer);
+
+                    //     directory.children.forEach(child => {
+                    //         if (child.type === 'directory') {
+                    //             renderDirectory(child, subContainer);
+                    //         } else if (child.type === 'file') {
+                    //             subContainer.appendChild(createFileElement(child));
+                    //         }
+                    //     });
+                    // }
+
+                    function renderDirectory(directory, container) {
+                        const directoryElement = document.createElement('div');
+                        directoryElement.className = 'directory';
+                        // directoryElement.textContent = directory.name;
+
+                        directoryElement.style.display = 'flex'; // Make the directory element a flex container
+                        directoryElement.style.justifyContent = 'space-between'; // Space out the content
+                        directoryElement.style.alignItems = 'center'; // Align items vertically
+
+                        const directoryName = document.createElement('span');
+                        directoryName.textContent = directory.name;
+                        directoryElement.appendChild(directoryName);
+
+                        // Check if the item is a directory
+                        if (directory.type === 'directory') {
+                            const downloadAllButton = document.createElement('a');
+                            downloadAllButton.href = `/download-all/${encodeURIComponent(directory.path)}`;
+                            downloadAllButton.className = 'download-button';
+                            downloadAllButton.textContent = 'Download All';
+
+                            directoryElement.appendChild(downloadAllButton);
+                        } else if (directory.type === 'file') {
+                            // // For files, create a download link
+                            const downloadFileLink = document.createElement('a');
+                            downloadFileLink.href = `/download/${encodeURIComponent(directory.path)}`;
+                            downloadFileLink.className = 'download-file-link';
+                            downloadFileLink.textContent = directory.name;
+                            // downloadFileLink.textContent = 'Download';
+                      
+
+                            directoryElement.textContent = ''; // Clear text to replace with link
+                            directoryElement.appendChild(downloadFileLink);
+                        }
+
+                        container.appendChild(directoryElement);
+
+                        if (directory.type === 'directory') {
+                            const subContainer = document.createElement('div');
+                            subContainer.style.marginLeft = '20px';
+
+
+                            directoryElement.addEventListener('click', () => {
+                                subContainer.style.display = subContainer.style.display === 'none' ? 'block' : 'none';
+                            });
+
+                            container.appendChild(subContainer);
+
+                            directory.children.forEach(child => {
+                                renderDirectory(child, subContainer);
+                            });
+                        }
+                    }
+
+
+
+                    directoryStructure.forEach(item => {
+                        if (item.type === 'directory') {
+                            renderDirectory(item, fileList);
+                        } else if (item.type === 'file') {
+                            fileList.appendChild(createFileElement(item));
+                        }
+                    });
+                })
+                .catch(error => console.error('Error fetching files:', error));
+        });
+    </script>
+
+</body>
+
+</html>

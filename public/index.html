@@ -1,0 +1,308 @@
+<!-- <!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>File Downloader</title>
+    <style>
+        body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 40px;
+    background-color: #f0f2f5;
+    color: #333;
+}
+
+h1 {
+    color: #007bff;
+    text-align: center;
+    font-size: 2em;
+    margin-bottom: 20px;
+    text-shadow: 0px 3px 5px rgba(0, 123, 255, 0.3);
+}
+
+.file-list {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #ffffff;
+    border-radius: 15px;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+    overflow: hidden;
+}
+
+.file-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px;
+    border-bottom: 1px solid #e0e0e0;
+    transition: transform 0.2s ease, background-color 0.3s ease;
+    animation: fadeIn 0.5s ease forwards;
+    opacity: 0;
+}
+
+.file-item:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+.file-item:last-child {
+    border-bottom: none;
+}
+
+.file-item:hover {
+    background-color: #f1f5f9;
+    transform: scale(1.02);
+}
+
+.file-item a {
+    text-decoration: none;
+    color: #007bff;
+    font-weight: 600;
+    transition: color 0.3s ease;
+}
+
+.file-item a:hover {
+    color: #0056b3;
+}
+
+.download-button {
+    background-color: #0e0f0f;
+    color: white;
+    padding: 8px 15px;
+    border-radius: 5px;
+    text-decoration: none;
+    font-size: 0.9em;
+    box-shadow: 0 4px 10px rgba(0, 123, 255, 0.3);
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.download-button:hover {
+    background-color: #0056b3;
+    transform: translateY(-3px);
+    box-shadow: 0 6px 12px rgba(0, 123, 255, 0.4);
+}
+
+@keyframes fadeIn {
+    0% {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@media (max-width: 600px) {
+    .file-list {
+        max-width: 100%;
+        padding: 15px;
+    }
+    .file-item {
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 20px;
+    }
+    .download-button {
+        margin-top: 10px;
+        width: 100%;
+        text-align: center;
+        transform: translateY(0); /* Ensure button doesn't appear out of place */
+    }
+}
+
+    </style>
+</head>
+
+<body>
+
+    <h1>File Downloader</h1>
+    <div id="fileList" class="file-list">
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            fetch('/api/files')
+                .then(response => response.json())
+                .then(files => {
+                    const fileList = document.getElementById('fileList');
+                    files.forEach(file => {
+                        const item = document.createElement('div');
+                        item.className = 'file-item';
+
+                        const link = document.createElement('a');
+                        link.href = `/download/${encodeURIComponent(file)}`;
+                        link.textContent = file;
+
+                        const downloadButton = document.createElement('a');
+                        downloadButton.href = `/download/${encodeURIComponent(file)}`;
+                        downloadButton.className = 'download-button';
+                        downloadButton.textContent = 'Download';
+
+                        item.appendChild(link);
+                        item.appendChild(downloadButton);
+                        fileList.appendChild(item);
+                    });
+                })
+                .catch(error => console.error('Error fetching files:', error));
+        });
+    </script>
+
+</body>
+
+</html> -->
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>File Downloader</title>
+    <style>
+        body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 40px;
+    background-color: #f0f2f5;
+    color: #333;
+}
+
+h1 {
+    color: #007bff;
+    text-align: center;
+    font-size: 2em;
+    margin-bottom: 20px;
+    text-shadow: 0px 3px 5px rgba(0, 123, 255, 0.3);
+}
+
+.file-list {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #ffffff;
+    border-radius: 15px;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+    overflow: hidden;
+}
+
+.file-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px;
+    border-bottom: 1px solid #e0e0e0;
+    transition: transform 0.2s ease, background-color 0.3s ease;
+    animation: fadeIn 0.5s ease forwards;
+    opacity: 0;
+}
+
+.file-item:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+.file-item:last-child {
+    border-bottom: none;
+}
+
+.file-item:hover {
+    background-color: #f1f5f9;
+    transform: scale(1.02);
+}
+
+.file-item a {
+    text-decoration: none;
+    color: #007bff;
+    font-weight: 600;
+    transition: color 0.3s ease;
+}
+
+.file-item a:hover {
+    color: #0056b3;
+}
+
+.download-button {
+    background-color: #0e0f0f;
+    color: white;
+    padding: 8px 15px;
+    border-radius: 5px;
+    text-decoration: none;
+    font-size: 0.9em;
+    box-shadow: 0 4px 10px rgba(0, 123, 255, 0.3);
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.download-button:hover {
+    background-color: #0056b3;
+    transform: translateY(-3px);
+    box-shadow: 0 6px 12px rgba(0, 123, 255, 0.4);
+}
+
+@keyframes fadeIn {
+    0% {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@media (max-width: 600px) {
+    .file-list {
+        max-width: 100%;
+        padding: 15px;
+    }
+    .file-item {
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 20px;
+    }
+    .download-button {
+        margin-top: 10px;
+        width: 100%;
+        text-align: center;
+        transform: translateY(0); /* Ensure button doesn't appear out of place */
+    }
+}
+
+    </style>
+</head>
+
+<body>
+
+    <h1>File Downloader</h1>
+    <div id="fileList" class="file-list">
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            fetch('/api/files')
+                .then(response => response.json())
+                // .then(response => console.log(response.json()) )
+                .then(files => {
+                    const fileList = document.getElementById('fileList');
+                    files.forEach(file => {
+                        const item = document.createElement('div');
+                        item.className = 'file-item';
+
+                        const link = document.createElement('a');
+                        link.href = `/download/${encodeURIComponent(file)}`;
+                        link.textContent = file;
+
+                        const downloadButton = document.createElement('a');
+                        downloadButton.href = `/download/${encodeURIComponent(file)}`;
+                        downloadButton.className = 'download-button';
+                        downloadButton.textContent = 'Download';
+
+                        item.appendChild(link);
+                        item.appendChild(downloadButton);
+                        fileList.appendChild(item);
+                    });
+                })
+                .catch(error => console.error('Error fetching files:', error));
+        });
+    </script>
+
+</body>
+
+</html>
